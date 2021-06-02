@@ -39,11 +39,18 @@ endfunction
 " Set default file encoding to utf-8
 set encoding=utf-8
 
+" Utility function to more easily alias comands
+fun! SetupCommandAlias(from, to)
+  exec 'cnoreabbrev <expr> '.a:from
+        \ .' ((getcmdtype() is# ":" && getcmdline() is# "'.a:from.'")'
+        \ .'? ("'.a:to.'") : ("'.a:from.'"))'
+endfun
+
 " Alias 'make' to 'mingw32-make.exe' - to build with mingw on Windows
-cnoreabbrev "make" "mingw32-make.exe"
+call SetupCommandAlias("make","r!{mingw32-make.exe}")
 
 " Shortcut to build AND inject into game
-"cnoreabbrev "inj" "make | !cmd injector.exe"
+call SetupCommandAlias("inject","r!{injector.exe}")
 
 " Avoid garbled characters in Chinese language windows OS
 let $LANG='en' 
@@ -146,8 +153,21 @@ call plug#begin('~/.vim/plugged')
 Plug 'vbe0201/vimdiscord'
 Plug 'preservim/nerdtree'
 Plug 'ryanoasis/vim-devicons'
+Plug 'maxboisvert/vim-simple-complete'
 
 call plug#end()
 
+set complete-=t
+set complete-=i
+
 " Start NERDTree and put the cursor back in the other window.
 autocmd VimEnter * NERDTree | wincmd p
+
+" Automatically load up debugger
+packadd termdebug
+call SetupCommandAlias("dbg","Termdebug")
+
+" Shorthand to create new tab & move between them
+call SetupCommandAlias("t","tabnew")
+map <PageUp> :tabprevious<cr>
+map <PageDown> :tabnext<cr>
