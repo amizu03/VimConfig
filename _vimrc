@@ -202,3 +202,14 @@ call SetupCommandAlias('dbg','Termdebug')
 call SetupCommandAlias('t','tabnew')
 map <PageUp> :tabprevious<cr>
 map <PageDown> :tabnext<cr>
+
+" Bindings to easily toggle folds
+nnoremap <silent> <Space> @=(foldlevel('.')?'za':"\<Space>")<CR>
+vnoremap <Space> zf
+
+" Automatically save and load views
+augroup remember_folds
+  autocmd!
+  autocmd BufWinLeave * mkview
+  autocmd BufWinEnter * silent! loadview
+augroup END
