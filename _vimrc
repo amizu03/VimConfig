@@ -47,10 +47,10 @@ fun! SetupCommandAlias(from, to)
 endfun
 
 " Alias 'make' to 'mingw32-make.exe' - to build with mingw on Windows
-call SetupCommandAlias("make","r!{mingw32-make.exe}")
+call SetupCommandAlias('make', 'r!{mingw32-make.exe}')
 
 " Shortcut to build AND inject into game
-call SetupCommandAlias("inject","r!{injector.exe}")
+call SetupCommandAlias('inject', 'r!{injector.exe}')
 
 " Avoid garbled characters in Chinese language windows OS
 let $LANG='en' 
@@ -71,8 +71,13 @@ set whichwrap+=<,>,h,l
 " Ignore case when searching
 set ignorecase
 
+" Get results while we're searching
+
 " When searching try to be smart about cases 
 set smartcase
+
+" Don't make annoying swapfiles
+set noswapfile 
 
 " Highlight search results
 set hlsearch
@@ -81,7 +86,11 @@ set hlsearch
 set incsearch 
 
 " Don't redraw while executing macros (good performance config)
-set lazyredraw
+"set lazyredraw
+
+" ----------
+set undodir='~/.vim/undodir'
+set undofile
 
 " No annoying sound on errors
 set noerrorbells
@@ -106,10 +115,12 @@ set smarttab
 " 1 tab == 4 spaces
 set shiftwidth=4
 set tabstop=4
+set softtabstop=4
 
-set ai "Auto indent
-set si "Smart indent
-set wrap "Wrap lines
+set cindent " Auto indent
+set autoindent " Strict C-style indentation
+set smartindent " Smart indent
+set nowrap "No line wrapping 
 
 " Useful mappings for managing tabs
 map <leader>tn :tabnew<cr>
@@ -141,11 +152,8 @@ set termguicolors
 " Show line numbers
 set number
 
-" Allow us to undo all our mistakes!
+" Allow us to undo all our mistakes! (too much???)
 set undolevels=1000
-
-" C indenting
-set cindent
 
 " VimPlug
 call plug#begin('~/.vim/plugged')
@@ -154,9 +162,32 @@ Plug 'vbe0201/vimdiscord'
 Plug 'preservim/nerdtree'
 Plug 'ryanoasis/vim-devicons'
 Plug 'maxboisvert/vim-simple-complete'
+Plug 'mbbill/undotree'
+Plug 'Valloric/YouCompleteMe'
 
 call plug#end()
 
+" Folding and syntax
+syntax on
+filetype plugin indent on
+
+" Undo tree
+nnoremap <F5> :UndotreeToggle<CR>
+
+if has("persistent_undo")
+    let target_path = expand('~/.vim/undodir')
+
+    " create the directory and any parent directories
+    " if the location does not exist.
+    if !isdirectory(target_path)
+        call mkdir(target_path, 'p', 0700)
+    endif
+
+    let &undodir=target_path
+    set undofile
+endif
+
+" -------------
 set complete-=t
 set complete-=i
 
@@ -165,9 +196,9 @@ autocmd VimEnter * NERDTree | wincmd p
 
 " Automatically load up debugger
 packadd termdebug
-call SetupCommandAlias("dbg","Termdebug")
+call SetupCommandAlias('dbg','Termdebug')
 
 " Shorthand to create new tab & move between them
-call SetupCommandAlias("t","tabnew")
+call SetupCommandAlias('t','tabnew')
 map <PageUp> :tabprevious<cr>
 map <PageDown> :tabnext<cr>
