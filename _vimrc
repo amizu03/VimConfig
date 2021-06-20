@@ -104,8 +104,6 @@ set foldcolumn=1
 " Enable syntax highlighting
 syntax enable 
 
-set background=dark
-
 " Use spaces instead of tabs
 set expandtab
 
@@ -136,15 +134,20 @@ au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g
 set laststatus=2
 
 " Format the status line
+function! HasPaste()
+    if &paste
+        return 'PASTE MODE  '
+    en
+        return ''
+endfunction
+
 set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
 
 " Remap VIM 0 to first non-blank character
 map 0 ^
 
 " Set default theme
-colors sunbather
-highlight Normal ctermbg=NONE
-highlight nonText ctermbg=NONE
+colorscheme substrata
 
 " Enable 24-bit color for windows console
 set termguicolors
@@ -164,6 +167,7 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'maxboisvert/vim-simple-complete'
 Plug 'mbbill/undotree'
 Plug 'Valloric/YouCompleteMe'
+Plug 'vimsence/vimsence'
 
 call plug#end()
 
@@ -213,3 +217,13 @@ augroup remember_folds
   autocmd BufWinLeave * mkview
   autocmd BufWinEnter * silent! loadview
 augroup END
+
+" Discord RPC
+let g:vimsence_client_id = '853395022216298547'
+let g:vimsence_small_text = 'NeoVim'
+let g:vimsence_small_image = 'neovim'
+let g:vimsence_editing_details = 'Editing: {}'
+let g:vimsence_editing_state = 'Working on: {}'
+let g:vimsence_file_explorer_text = 'In NERDTree'
+let g:vimsence_file_explorer_details = 'Looking for files'
+let g:vimsence_custom_icons = {'filetype': 'iconname'}
